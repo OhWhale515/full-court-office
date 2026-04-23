@@ -1,0 +1,25 @@
+{
+  "name": "Full Court Office",
+  "short_name": "FCO",
+  "description": "WNBA Fantasy Companion - Custom scoring rankings, matchup analysis, and roster optimization",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0a0f",
+  "theme_color": "#f97316",
+  "orientation": "any",
+  "categories": ["sports", "utilities"],
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
