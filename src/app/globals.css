@@ -1,19 +1,20 @@
 @import "tailwindcss";
 
 :root {
-  --background: #0a0a0f;
-  --foreground: #e8e8ed;
-  --card: #12121a;
-  --card-hover: #1a1a25;
-  --border: #1e1e2e;
-  --accent: #f97316;
-  --accent-dim: #f97316aa;
-  --gold: #f59e0b;
-  --purple: #8b5cf6;
-  --blue: #3b82f6;
-  --green: #10b981;
-  --red: #ef4444;
-  --muted: #6b7280;
+  --background: #050508;
+  --foreground: #ffffff;
+  --card: #0c0c14;
+  --card-hover: #12121d;
+  --border: #222230;
+  --border-heavy: #333345;
+  --accent: #ff6b00; /* Vibrant Brutalist Orange */
+  --accent-dim: #ff6b0033;
+  --gold: #ffb800;
+  --purple: #a855f7;
+  --blue: #2563eb;
+  --green: #00ff94; /* High-viz Green */
+  --red: #ff3e3e;
+  --muted: #888899;
 }
 
 @theme inline {
@@ -22,6 +23,7 @@
   --color-card: var(--card);
   --color-card-hover: var(--card-hover);
   --color-border: var(--border);
+  --color-border-heavy: var(--border-heavy);
   --color-accent: var(--accent);
   --color-accent-dim: var(--accent-dim);
   --color-gold: var(--gold);
@@ -38,23 +40,75 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Brutalist Utilities */
+.brutalist-border {
+  border: 2px solid var(--border-heavy);
+}
+
+.brutalist-card {
+  background: var(--card);
+  border: 2px solid var(--border-heavy);
+  transition: all 0.2s steps(4);
+}
+
+.brutalist-card:hover {
+  border-color: var(--accent);
+  transform: translate(-2px, -2px);
+  box-shadow: 4px 4px 0px var(--accent-dim);
+}
+
+.brutalist-button {
+  background: var(--accent);
+  color: #000;
+  font-weight: 800;
+  text-transform: uppercase;
+  padding: 0.5rem 1rem;
+  border: 2px solid #000;
+  box-shadow: 2px 2px 0px #000;
+  transition: all 0.1s steps(2);
+}
+
+.brutalist-button:active {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0px #000;
+}
+
+.scanlines {
+  position: relative;
+  overflow: hidden;
+}
+
+.scanlines::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    rgba(18, 16, 16, 0) 50%,
+    rgba(0, 0, 0, 0.1) 50%
+  );
+  background-size: 100% 4px;
+  z-index: 10;
+  pointer-events: none;
 }
 
 @keyframes fade-in {
-  from { opacity: 0; transform: translateY(8px); }
+  from { opacity: 0; transform: translateY(12px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
 .animate-fade-in {
-  animation: fade-in 0.4s ease-out forwards;
+  animation: fade-in 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .stat-bar {
-  transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: width 1s cubic-bezier(0.65, 0, 0.35, 1);
 }
 
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 8px;
 }
 
 ::-webkit-scrollbar-track {
@@ -62,10 +116,10 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--border);
-  border-radius: 3px;
+  background: var(--border-heavy);
+  border: 2px solid var(--background);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--muted);
+  background: var(--accent);
 }

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { DEFAULT_WEIGHTS } from "@/lib/scoring";
-import { getStoredConfig, saveConfig, clearConfig, saveLeagueData, getStoredLeagueData, type StoredConfig } from "@/lib/league-store";
+import { getStoredConfig, saveConfig, clearConfig, saveLeagueData, type StoredConfig } from "@/lib/league-store";
 
 export default function SettingsPage() {
   const [config, setConfig] = useState<StoredConfig>({ leagueId: "", seasonId: "2025", espnS2: "", swid: "" });
@@ -13,8 +13,10 @@ export default function SettingsPage() {
   useEffect(() => {
     const stored = getStoredConfig();
     if (stored) {
-      setConfig(stored);
-      setIsConnected(!!stored.lastSync);
+      setTimeout(() => {
+        setConfig(stored);
+        setIsConnected(!!stored.lastSync);
+      }, 0);
     }
   }, []);
 
@@ -56,187 +58,193 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="p-6 lg:p-8 max-w-3xl mx-auto">
-      <div className="mb-6 animate-fade-in">
-        <h1 className="text-2xl font-bold mb-1">Settings</h1>
-        <p className="text-muted text-sm">League configuration and ESPN sync</p>
+    <div className="p-6 lg:p-12 max-w-5xl mx-auto">
+      <div className="mb-12">
+        <div className="flex items-center gap-2 mb-2">
+          <span className="bg-accent text-black px-2 py-0.5 text-[10px] font-black uppercase tracking-widest">Configuration</span>
+          <span className="text-muted text-[10px] font-bold uppercase tracking-widest">System Params</span>
+        </div>
+        <h1 className="text-5xl lg:text-7xl font-black uppercase tracking-tighter leading-none mb-4">
+          Control <span className="text-accent italic">Panel</span>
+        </h1>
+        <p className="text-muted font-bold text-sm uppercase tracking-wide max-w-md">
+          Authentication and synchronization settings for live ESPN data integration.
+        </p>
       </div>
 
-      {/* ESPN Integration */}
-      <div className="bg-card border border-border rounded-xl p-5 mb-6 animate-fade-in">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-sm font-semibold uppercase tracking-wider text-muted">ESPN League Sync</h2>
-          {isConnected && (
-            <span className="flex items-center gap-1.5 text-xs text-green">
-              <span className="w-2 h-2 rounded-full bg-green animate-pulse" />
-              Connected
-            </span>
-          )}
-        </div>
+      <div className="grid lg:grid-cols-3 gap-8">
+        <div className="lg:col-span-2 space-y-8">
+          {/* ESPN Integration */}
+          <div className="brutalist-card p-8 relative overflow-hidden">
+            <div className="absolute top-0 right-0 p-4 font-black text-6xl opacity-[0.03] pointer-events-none italic">SYNC</div>
+            <div className="flex items-center justify-between mb-8 border-b-2 border-border-heavy pb-4">
+              <h2 className="text-xs font-black uppercase tracking-[0.3em] text-muted">ESPN Data Interface</h2>
+              {isConnected && (
+                <span className="flex items-center gap-2 text-[10px] font-black uppercase text-green">
+                  <span className="w-2 h-2 bg-green animate-pulse" />
+                  Live Stream Active
+                </span>
+              )}
+            </div>
 
-        <div className="space-y-3 mb-4">
-          <div>
-            <label className="text-xs text-muted block mb-1">League ID</label>
-            <input
-              type="text"
-              value={config.leagueId}
-              onChange={(e) => setConfig({ ...config, leagueId: e.target.value })}
-              placeholder="e.g., 123456789"
-              className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-accent"
-            />
-            <p className="text-xs text-muted/60 mt-1">Found in your ESPN league URL</p>
+            <div className="space-y-6 mb-8">
+              <div className="grid sm:grid-cols-2 gap-6">
+                <div>
+                  <label className="text-[10px] font-black text-muted uppercase tracking-widest block mb-2">League ID</label>
+                  <input
+                    type="text"
+                    value={config.leagueId}
+                    onChange={(e) => setConfig({ ...config, leagueId: e.target.value })}
+                    placeholder="E.G. 12345678"
+                    className="w-full bg-background border-2 border-border-heavy p-4 text-sm font-black uppercase focus:border-accent focus:outline-none transition-colors"
+                  />
+                </div>
+                <div>
+                  <label className="text-[10px] font-black text-muted uppercase tracking-widest block mb-2">Season</label>
+                  <select
+                    value={config.seasonId}
+                    onChange={(e) => setConfig({ ...config, seasonId: e.target.value })}
+                    className="w-full bg-background border-2 border-border-heavy p-4 text-sm font-black uppercase focus:border-accent focus:outline-none transition-colors"
+                  >
+                    <option value="2025">2025 SESSION</option>
+                    <option value="2024">2024 SESSION</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="border-t-2 border-dashed border-border-heavy pt-6">
+                <p className="text-[10px] font-black text-accent uppercase tracking-[0.2em] mb-4 italic underline decoration-2">Auth Cookies (Private Only)</p>
+                <div className="space-y-4">
+                  <div>
+                    <label className="text-[10px] font-black text-muted uppercase tracking-widest block mb-2">espn_s2</label>
+                    <input
+                      type="password"
+                      value={config.espnS2}
+                      onChange={(e) => setConfig({ ...config, espnS2: e.target.value })}
+                      placeholder="AUTH_TOKEN_STRING..."
+                      className="w-full bg-background border-2 border-border-heavy p-4 text-xs font-mono focus:border-accent focus:outline-none transition-colors"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[10px] font-black text-muted uppercase tracking-widest block mb-2">SWID</label>
+                    <input
+                      type="password"
+                      value={config.swid}
+                      onChange={(e) => setConfig({ ...config, swid: e.target.value })}
+                      placeholder="{UUID-FORMAT-STRING}"
+                      className="w-full bg-background border-2 border-border-heavy p-4 text-xs font-mono focus:border-accent focus:outline-none transition-colors"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-4">
+              <button
+                onClick={handleSync}
+                disabled={!config.leagueId || syncing}
+                className="brutalist-button py-4 px-10 flex-1"
+              >
+                {syncing ? "SYNCHRONIZING..." : isConnected ? "REFRESH CONNECTION" : "ESTABLISH LINK"}
+              </button>
+              {isConnected && (
+                <button
+                  onClick={handleDisconnect}
+                  className="p-4 border-2 border-border-heavy font-black uppercase text-xs text-muted hover:border-red hover:text-red transition-all"
+                >
+                  DISCONNECT
+                </button>
+              )}
+            </div>
+
+            {syncResult && (
+              <div className={`mt-6 p-4 border-2 font-black text-xs uppercase tracking-widest ${syncResult.success ? "bg-green/10 border-green text-green" : "bg-red/10 border-red text-red"}`}>
+                {syncResult.message}
+              </div>
+            )}
+
+            {config.lastSync && (
+              <p className="text-[10px] font-black text-muted uppercase tracking-widest mt-6 italic">
+                Last integrity check: {new Date(config.lastSync).toLocaleString().toUpperCase()}
+              </p>
+            )}
           </div>
 
-          <div>
-            <label className="text-xs text-muted block mb-1">Season</label>
-            <select
-              value={config.seasonId}
-              onChange={(e) => setConfig({ ...config, seasonId: e.target.value })}
-              className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-accent"
-            >
-              <option value="2025">2025</option>
-              <option value="2024">2024</option>
-            </select>
-          </div>
-
-          <div className="border-t border-border pt-3">
-            <p className="text-xs text-accent mb-2">For private leagues only:</p>
-            <div className="space-y-3">
-              <div>
-                <label className="text-xs text-muted block mb-1">espn_s2 Cookie</label>
-                <input
-                  type="password"
-                  value={config.espnS2}
-                  onChange={(e) => setConfig({ ...config, espnS2: e.target.value })}
-                  placeholder="Paste from browser cookies"
-                  className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-accent font-mono"
-                />
-              </div>
-              <div>
-                <label className="text-xs text-muted block mb-1">SWID Cookie</label>
-                <input
-                  type="password"
-                  value={config.swid}
-                  onChange={(e) => setConfig({ ...config, swid: e.target.value })}
-                  placeholder="{XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX}"
-                  className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-accent font-mono"
-                />
-              </div>
+          {/* Scoring Weights */}
+          <div className="brutalist-card p-8">
+            <h2 className="text-xs font-black uppercase tracking-[0.3em] text-muted mb-8 border-b-2 border-border-heavy pb-4">Multipliers</h2>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+              <WeightBox label="PTS" value={DEFAULT_WEIGHTS.points} />
+              <WeightBox label="REB" value={DEFAULT_WEIGHTS.rebounds} />
+              <WeightBox label="AST" value={DEFAULT_WEIGHTS.assists} />
+              <WeightBox label="STL" value={DEFAULT_WEIGHTS.steals} accent />
+              <WeightBox label="BLK" value={DEFAULT_WEIGHTS.blocks} accent />
+              <WeightBox label="TO" value={DEFAULT_WEIGHTS.turnovers} negative />
+              <WeightBox label="3PM" value={DEFAULT_WEIGHTS.threePointersMade} />
             </div>
           </div>
         </div>
 
-        <div className="flex gap-2">
-          <button
-            onClick={handleSync}
-            disabled={!config.leagueId || syncing}
-            className="flex-1 py-2.5 rounded-lg text-sm font-medium bg-accent text-white hover:bg-accent/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          >
-            {syncing ? "Syncing..." : isConnected ? "Re-sync" : "Connect League"}
-          </button>
-          {isConnected && (
-            <button
-              onClick={handleDisconnect}
-              className="px-4 py-2.5 rounded-lg text-sm text-muted hover:text-red bg-background transition-colors"
-            >
-              Disconnect
-            </button>
-          )}
-        </div>
-
-        {syncResult && (
-          <div className={`mt-3 p-3 rounded-lg text-sm ${syncResult.success ? "bg-green/10 text-green" : "bg-red/10 text-red"}`}>
-            {syncResult.message}
+        <div className="space-y-8">
+          {/* League Meta */}
+          <div className="brutalist-card p-6 bg-accent/5">
+            <h2 className="text-xs font-black uppercase tracking-[0.3em] text-accent mb-6 border-b-2 border-accent/20 pb-2 italic">Institutional Meta</h2>
+            <div className="space-y-4">
+              <MetaRow label="Platform" value="ESPN" />
+              <MetaRow label="Format" value="H2H Points" />
+              <MetaRow label="Teams" value="4 (Active)" />
+              <MetaRow label="Roster" value="8 Slots" />
+              <MetaRow label="Draft" value="Snake" />
+              <MetaRow label="Waivers" value="Rolling" />
+            </div>
           </div>
-        )}
 
-        {config.lastSync && (
-          <p className="text-xs text-muted mt-3">
-            Last synced: {new Date(config.lastSync).toLocaleString()}
-          </p>
-        )}
+          {/* Weekly Protocol */}
+          <div className="brutalist-card p-6">
+            <h2 className="text-xs font-black uppercase tracking-[0.3em] text-muted mb-6 border-b-2 border-border-heavy pb-2">Weekly Protocol</h2>
+            <div className="space-y-4">
+              {[
+                "Initialize ESPN lineups",
+                "Execute neural startup analysis",
+                "Execute schedule heat-map review",
+                "Identify high-volume swap targets",
+                "Evaluate trade vault differentials",
+              ].map((step, i) => (
+                <div key={i} className="flex items-start gap-4">
+                  <span className="text-xs font-black text-accent italic font-mono">0{i + 1}</span>
+                  <span className="text-[11px] font-black uppercase tracking-tight text-muted leading-tight">{step}</span>
+                </div>
+              ))}
+            </div>
+          </div>
 
-        <div className="mt-4 p-3 rounded-lg bg-background">
-          <p className="text-xs text-muted mb-2">How to find your cookies (private leagues):</p>
-          <ol className="text-xs text-muted/70 space-y-1 list-decimal list-inside">
-            <li>Log in to ESPN Fantasy in your browser</li>
-            <li>Open Developer Tools (F12) &gt; Application &gt; Cookies</li>
-            <li>Find espn_s2 and SWID cookies</li>
-            <li>Copy and paste their values above</li>
-          </ol>
+          <div className="p-6 border-2 border-dashed border-border-heavy">
+             <p className="text-[10px] font-black text-muted uppercase tracking-widest leading-relaxed">
+                System is optimized for the <span className="text-accent">WNBA 2025</span> regular season cycle. Neural weights are subject to commissioner adjustment.
+             </p>
+          </div>
         </div>
-      </div>
-
-      {/* League Info */}
-      <div className="bg-card border border-border rounded-xl p-5 mb-6 animate-fade-in">
-        <h2 className="text-sm font-semibold uppercase tracking-wider text-muted mb-4">League Info</h2>
-        <div className="space-y-3">
-          <InfoRow label="League Name" value="Full Court Office" />
-          <InfoRow label="Commissioner" value="Commissioner Jones" />
-          <InfoRow label="Platform" value="ESPN Fantasy Sports" />
-          <InfoRow label="Format" value="Head-to-Head" />
-          <InfoRow label="Teams" value="4 (expandable)" />
-          <InfoRow label="Roster Size" value="8 players" />
-          <InfoRow label="Draft Type" value="Snake Draft" />
-          <InfoRow label="Waivers" value="Rolling" />
-        </div>
-      </div>
-
-      {/* Scoring */}
-      <div className="bg-card border border-border rounded-xl p-5 mb-6 animate-fade-in">
-        <h2 className="text-sm font-semibold uppercase tracking-wider text-muted mb-4">Scoring Weights</h2>
-        <div className="space-y-3">
-          <WeightRow label="Points" value={DEFAULT_WEIGHTS.points} />
-          <WeightRow label="Rebounds" value={DEFAULT_WEIGHTS.rebounds} />
-          <WeightRow label="Assists" value={DEFAULT_WEIGHTS.assists} />
-          <WeightRow label="Steals" value={DEFAULT_WEIGHTS.steals} accent />
-          <WeightRow label="Blocks" value={DEFAULT_WEIGHTS.blocks} accent />
-          <WeightRow label="Turnovers" value={DEFAULT_WEIGHTS.turnovers} negative />
-          <WeightRow label="3-Pointers Made" value={DEFAULT_WEIGHTS.threePointersMade} />
-        </div>
-      </div>
-
-      {/* Weekly Flow */}
-      <div className="bg-card border border-border rounded-xl p-5 animate-fade-in">
-        <h2 className="text-sm font-semibold uppercase tracking-wider text-muted mb-4">Weekly Flow</h2>
-        <ol className="space-y-2">
-          {[
-            "Set lineup in ESPN app",
-            "Use Matchup Analyzer for start/sit decisions",
-            "Check Streaming Guide for waiver pickups",
-            "Review matchup outcome",
-            "Evaluate trades with Trade Evaluator",
-            "Check Discord for weekly summaries (optional)",
-          ].map((step, i) => (
-            <li key={i} className="flex items-start gap-3 text-sm">
-              <span className="w-6 h-6 rounded-full bg-accent/10 text-accent flex items-center justify-center text-xs font-bold shrink-0">
-                {i + 1}
-              </span>
-              <span className="text-muted">{step}</span>
-            </li>
-          ))}
-        </ol>
       </div>
     </div>
   );
 }
 
-function InfoRow({ label, value }: { label: string; value: string }) {
+function WeightBox({ label, value, accent, negative }: { label: string; value: number; accent?: boolean; negative?: boolean }) {
   return (
-    <div className="flex items-center justify-between py-1">
-      <span className="text-sm text-muted">{label}</span>
-      <span className="text-sm font-medium">{value}</span>
+    <div className={`text-center p-4 border-2 ${accent ? "border-accent bg-accent/5" : negative ? "border-red/50 bg-red/5" : "border-border-heavy"}`}>
+      <p className={`text-xl font-black font-mono italic ${accent ? "text-accent" : negative ? "text-red" : ""}`}>
+        {value > 0 ? `${value}X` : `${value}`}
+      </p>
+      <p className="text-[10px] font-black text-muted uppercase tracking-widest mt-1">{label}</p>
     </div>
   );
 }
 
-function WeightRow({ label, value, accent, negative }: { label: string; value: number; accent?: boolean; negative?: boolean }) {
+function MetaRow({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex items-center justify-between py-1">
-      <span className="text-sm text-muted">{label}</span>
-      <span className={`text-sm font-bold ${accent ? "text-accent" : negative ? "text-red" : ""}`}>
-        {value > 0 ? `${value}x` : `${value}`}
-      </span>
+    <div className="flex items-center justify-between py-1 border-b border-border-heavy/20">
+      <span className="text-[10px] font-black text-muted uppercase tracking-widest">{label}</span>
+      <span className="text-xs font-black uppercase tracking-tighter italic">{value}</span>
     </div>
   );
 }
