@@ -57,7 +57,6 @@ function BasketballCourt() {
         position={[0, 4, -5]}
         fontSize={1.5}
         color="#ff6b00"
-        font="/fonts/Inter-Black.woff" // Assuming font availability or default
         anchorX="center"
         anchorY="middle"
       >
